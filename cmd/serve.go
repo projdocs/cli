@@ -17,13 +17,14 @@ var serveCmd = &cobra.Command{
 
 		var (
 			docker *dkr.DockerClient
-			err    error
-			cfg    *config.File
+			cfg    *config.Config
 		)
 
 		// load config
-		if cfg, err = config.LoadFile(); err != nil {
-			return err
+		if cfgFile, err := config.LoadFile(); err != nil {
+			return fmt.Errorf("could not load config file: %w", err)
+		} else if cfg, err = config.FromFile(cfgFile); err != nil {
+			return fmt.Errorf("could not build config: %w", err)
 		}
 
 		// setup docker

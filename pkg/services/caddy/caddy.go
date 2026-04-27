@@ -17,7 +17,7 @@ import (
 //go:embed Caddyfile
 var Caddyfile []byte
 
-var ServiceConstructor types.ServiceConstructor = func(cfg config.File) *types.ServiceConstructorResult {
+var ServiceConstructor types.ServiceConstructor = func(cfg config.Config) *types.ServiceConstructorResult {
 	return &types.ServiceConstructorResult{
 		Embeds: []*embeds.EmbeddedFile{
 			{
@@ -34,8 +34,8 @@ var ServiceConstructor types.ServiceConstructor = func(cfg config.File) *types.S
 					"com.projdocs.version":       pkg.Version,
 				},
 				Env: []string{
-					"PROXY_DOMAIN=" + cfg.URLs.Supabase,
-					"WEB_DOMAIN=" + cfg.URLs.Web,
+					"PROXY_DOMAIN=" + cfg.File.URLs.Supabase,
+					"WEB_DOMAIN=" + cfg.File.URLs.Web,
 				},
 				Cmd: []string{
 					"/bin/sh",

@@ -109,7 +109,7 @@ func (docker *DockerClient) copyToContainer(ctx context.Context, containerID str
 	fhdr := &tar.Header{
 		Name:     path.Join(file.Path.Parent(), file.Path.Base()),
 		Typeflag: tar.TypeReg,
-		Mode:     0o644, // -rw-r--r--
+		Mode:     0o555, // xr-xr-xr-
 		Size:     int64(len(file.Data)),
 		ModTime:  now,
 	}

@@ -38,7 +38,7 @@ func (r *Builder) MustRegister(constructor types.ServiceConstructor) *Builder {
 	return r
 }
 
-func (r *Builder) Build(cfg config.File) *Runner {
+func (r *Builder) Build(cfg config.Config) *Runner {
 
 	services := make([]*types.ServiceConstructorResult, len(r.constructors))
 	for i, constructor := range r.constructors {

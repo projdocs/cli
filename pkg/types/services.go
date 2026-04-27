@@ -11,4 +11,4 @@ type ServiceConstructorResult struct {
 	Container *client.ContainerCreateOptions
 }
 
-type ServiceConstructor = func(cfg config.File) *ServiceConstructorResult
+type ServiceConstructor = func(cfg config.Config) *ServiceConstructorResult
