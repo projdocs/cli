@@ -1,17 +1,32 @@
-{$PROXY_DOMAIN} {
+{$PROXY_DOMAIN}:8000 {
     @supabase_api path /auth/v1/* /rest/v1/* /graphql/v1 /realtime/v1/* /storage/v1/* /functions/v1/* /mcp /sso/*
     handle @supabase_api {
         reverse_proxy kong:8000
     }
     handle {
-        respond 403
+        respond "{\"error\":\"resource not found\"}" 404
     }
     header -server
 }
 
 {$WEB_DOMAIN} {
+    @admin path /admin /admin/*
+    handle @admin {
+        @blocked not remote_ip {$WHITELISTED_IPS}
+        respond @blocked "{\"error\":\"your ip address is not whitelisted for this resource\"}" 403
+        reverse_proxy admin:3000
+    }
+
     handle {
         reverse_proxy web:3000
     }
     header -server
+}
+
+:80 {
+	respond "{\"error\":\"resource not found\"}" 404
+}
+
+:443 {
+	respond "{\"error\":\"resource not found\"}" 404
 }

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"fmt"
+	"net/url"
 	"os"
 	"path/filepath"
 
@@ -11,12 +12,33 @@ import (
 )
 
 type URLs struct {
-	Web      string `yaml:"web"`
-	Supabase string `yaml:"supabase"`
+	Web string `yaml:"web"`
 }
 
 type File struct {
 	URLs URLs `yaml:"urls"`
+}
+
+func (file *File) Validate() error {
+
+	protocolAndPortOnly := func(raw string) bool {
+		u, err := url.Parse(raw)
+		if err != nil {
+			return false
+		}
+		return u.Scheme != "" &&
+			u.Hostname() != "" &&
+			u.Port() == "" &&
+			u.Path == "" &&
+			u.RawQuery == "" &&
+			u.Fragment == ""
+	}
+
+	if !protocolAndPortOnly(file.URLs.Web) {
+		return fmt.Errorf("invalid URL: %s (expected format: https://example.com, http://localhost, etc.)", file.URLs.Web)
+	}
+
+	return nil
 }
 
 //go:embed file.yaml

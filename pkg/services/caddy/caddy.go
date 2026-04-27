@@ -34,8 +34,9 @@ var ServiceConstructor types.ServiceConstructor = func(cfg config.Config) *types
 					"com.projdocs.version":       pkg.Version,
 				},
 				Env: []string{
-					"PROXY_DOMAIN=" + cfg.File.URLs.Supabase,
+					"PROXY_DOMAIN=" + cfg.File.URLs.Web,
 					"WEB_DOMAIN=" + cfg.File.URLs.Web,
+					"WHITELISTED_IPS=127.0.0.1",
 				},
 				Cmd: []string{
 					"/bin/sh",
@@ -46,9 +47,11 @@ var ServiceConstructor types.ServiceConstructor = func(cfg config.Config) *types
 			HostConfig: &container.HostConfig{
 				RestartPolicy: container.RestartPolicy{Name: "unless-stopped"},
 				PortBindings: network.PortMap{
-					network.MustParsePort("80/tcp"):  []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "80"}},
-					network.MustParsePort("443/tcp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "443"}},
-					network.MustParsePort("443/udp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "443"}},
+					network.MustParsePort("80/tcp"):   []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "80"}},
+					network.MustParsePort("443/tcp"):  []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "443"}},
+					network.MustParsePort("443/udp"):  []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "443"}},
+					network.MustParsePort("8000/tcp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "8000"}},
+					network.MustParsePort("8000/udp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "8000"}},
 				},
 				Mounts: []mount.Mount{
 					{
