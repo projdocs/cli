@@ -36,10 +36,17 @@ type Studio struct {
 	Password string
 }
 
+type Storage struct {
+	MinioPassword string
+	S3AccessKeyID string
+	S3SecretKey   string
+}
+
 type Supabase struct {
 	Keys     SupabaseKeys
 	Postgres Postgres
 	Studio   Studio
+	Storage  Storage
 }
 
 func FromFile(file *File) (*Config, error) {
@@ -52,6 +59,21 @@ func FromFile(file *File) (*Config, error) {
 	dashboardPass, dashboardPassErr := generateHex(16)
 	if dashboardPassErr != nil {
 		return nil, fmt.Errorf("failed to generate dashboard password: %w", dashboardPassErr)
+	}
+
+	minioPass, minioPassErr := generateHex(16)
+	if minioPassErr != nil {
+		return nil, fmt.Errorf("failed to generate dashboard password: %w", minioPassErr)
+	}
+
+	s3AccessKey, s3AccessKeyErr := generateHex(16)
+	if s3AccessKeyErr != nil {
+		return nil, fmt.Errorf("failed to generate S3 access key: %w", s3AccessKeyErr)
+	}
+
+	s3Secret, s3SecretErr := generateHex(32)
+	if s3SecretErr != nil {
+		return nil, fmt.Errorf("failed to generate S3 secret key: %w", s3SecretErr)
 	}
 
 	jwtSecret, err := keys.GenerateJWTSecret()
@@ -75,6 +97,11 @@ func FromFile(file *File) (*Config, error) {
 				},
 				Studio: Studio{
 					Password: dashboardPass,
+				},
+				Storage: Storage{
+					MinioPassword: minioPass,
+					S3AccessKeyID: s3AccessKey,
+					S3SecretKey:   s3Secret,
 				},
 				Keys: SupabaseKeys{
 					JWTJWKS:     derivedKeys.JWTJWKS,

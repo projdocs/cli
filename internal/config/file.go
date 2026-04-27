@@ -11,12 +11,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type URLs struct {
-	Web string `yaml:"web"`
-}
-
 type File struct {
-	URLs URLs `yaml:"urls"`
+	URLs struct {
+		Web string `yaml:"web"`
+	} `yaml:"urls"`
+	Storage struct {
+		SizeLimitInMB int `yaml:"size_limit_mb"`
+	} `yaml:"storage"`
 }
 
 func (file *File) Validate() error {
@@ -35,7 +36,11 @@ func (file *File) Validate() error {
 	}
 
 	if !protocolAndPortOnly(file.URLs.Web) {
-		return fmt.Errorf("invalid URL: %s (expected format: https://example.com, http://localhost, etc.)", file.URLs.Web)
+		return fmt.Errorf("invalid urls.web: %s (expected format: https://example.com, http://localhost, etc.)", file.URLs.Web)
+	}
+
+	if file.Storage.SizeLimitInMB < 1 {
+		return fmt.Errorf("invalid storage.size_limit_mb: must be greater than or equal to 1")
 	}
 
 	return nil

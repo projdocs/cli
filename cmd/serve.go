@@ -23,6 +23,8 @@ var serveCmd = &cobra.Command{
 		// load config
 		if cfgFile, err := config2.LoadFile(); err != nil {
 			return fmt.Errorf("could not load config file: %w", err)
+		} else if validationErr := cfgFile.Validate(); validationErr != nil {
+			return fmt.Errorf("could not validate config file: %w", validationErr)
 		} else if cfg, err = config2.FromFile(cfgFile); err != nil {
 			return fmt.Errorf("could not build config: %w", err)
 		}

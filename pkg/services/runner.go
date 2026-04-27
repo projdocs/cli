@@ -102,8 +102,9 @@ func (r *Runner) Start(ctx context.Context) error {
 					}
 				}
 				if healthy && service.AfterStartExec != nil {
-					if _, err := r.docker.ExecInContainer(ctx, *containerID, service.AfterStartExec); err != nil {
+					if output, err := r.docker.ExecInContainer(ctx, *containerID, service.AfterStartExec); err != nil {
 						color.Yellow("%s after-start hook failed: %s", service.Container.Name, err)
+						color.Red(output)
 					}
 				}
 			}

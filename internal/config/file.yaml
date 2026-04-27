@@ -1,2 +1,4 @@
 urls:
   web:      http://localhost
+storage:
+  size_limit_mb: 50
