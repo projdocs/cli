@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/projdocs/cli/config"
+	"github.com/fatih/color"
+	"github.com/projdocs/cli/internal"
+	"github.com/projdocs/cli/internal/config"
 	"github.com/projdocs/cli/pkg/dkr"
 	"github.com/projdocs/cli/pkg/types"
 )
@@ -63,9 +65,11 @@ func (r *Runner) Start(ctx context.Context) error {
 	if r.started {
 		return fmt.Errorf("already started")
 	}
-
 	r.started = true
+
+	spin := internal.NewSpinner("Starting services...")
 	for _, service := range r.services {
+		spin.Update(fmt.Sprintf("Starting %s...", service.Container.Name))
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
@@ -81,10 +85,23 @@ func (r *Runner) Start(ctx context.Context) error {
 			} else
 			// start container
 			if err := r.docker.Start(ctx, *containerID); err != nil {
-				// attempt to stop/cleanup
-				r.docker.Stop(ctx, *containerID)
+				color.Yellow("failed to start %s docker container: %s", service.Container.Name, err)
+			} else {
+				healthy := true
+				if service.Container.Config != nil && service.Container.Config.Healthcheck != nil {
+					if hcErr := r.docker.InspectContainer(ctx, *containerID); hcErr != nil {
+						color.Yellow("failed to inspect %s docker container: %s", service.Container.Name, hcErr)
+						healthy = false
+					}
+				}
+				if healthy && service.AfterStartExec != nil {
+					if _, err := r.docker.ExecInContainer(ctx, *containerID, service.AfterStartExec); err != nil {
+						color.Yellow("%s after-start hook failed: %s", service.Container.Name, err)
+					}
+				}
 			}
 		}
 	}
+	spin.Success("All services started!")
 	return nil
 }

@@ -2,13 +2,11 @@ package kong
 
 import (
 	_ "embed"
-	"net/netip"
 	"time"
 
 	"github.com/moby/moby/api/types/container"
-	"github.com/moby/moby/api/types/network"
 	"github.com/moby/moby/client"
-	"github.com/projdocs/cli/config"
+	"github.com/projdocs/cli/internal/config"
 	"github.com/projdocs/cli/pkg"
 	"github.com/projdocs/cli/pkg/types"
 	"github.com/projdocs/cli/pkg/types/embeds"
@@ -68,10 +66,10 @@ var ServiceConstructor types.ServiceConstructor = func(cfg config.Config) *types
 			},
 			HostConfig: &container.HostConfig{
 				RestartPolicy: container.RestartPolicy{Name: "unless-stopped"},
-				PortBindings: network.PortMap{
-					network.MustParsePort("8000/tcp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "8000"}},
-					network.MustParsePort("8443/tcp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "8443"}},
-				},
+				//PortBindings: network.PortMap{
+				//	network.MustParsePort("8000/tcp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "8000"}},
+				//	network.MustParsePort("8443/tcp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "8443"}},
+				//},
 			},
 			//NetworkingConfig: &network.NetworkingConfig{
 			//	EndpointsConfig: map[string]*network.EndpointSettings{

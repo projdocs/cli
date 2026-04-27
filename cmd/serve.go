@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/moby/moby/client"
-	"github.com/projdocs/cli/config"
+	config2 "github.com/projdocs/cli/internal/config"
 	"github.com/projdocs/cli/pkg/dkr"
 	"github.com/projdocs/cli/pkg/services"
 	"github.com/spf13/cobra"
@@ -17,13 +17,13 @@ var serveCmd = &cobra.Command{
 
 		var (
 			docker *dkr.DockerClient
-			cfg    *config.Config
+			cfg    *config2.Config
 		)
 
 		// load config
-		if cfgFile, err := config.LoadFile(); err != nil {
+		if cfgFile, err := config2.LoadFile(); err != nil {
 			return fmt.Errorf("could not load config file: %w", err)
-		} else if cfg, err = config.FromFile(cfgFile); err != nil {
+		} else if cfg, err = config2.FromFile(cfgFile); err != nil {
 			return fmt.Errorf("could not build config: %w", err)
 		}
 

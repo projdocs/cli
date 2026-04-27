@@ -14,6 +14,8 @@ func GetConfigDirPath() string {
 			return filepath.Join(appData, "projdocs")
 		}
 		return filepath.Join(os.Getenv("USERPROFILE"), "projdocs")
+	case "darwin":
+		return "/Users/Shared/projdocs"
 	default:
 		return "/opt/projdocs"
 	}

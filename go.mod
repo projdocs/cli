@@ -9,6 +9,7 @@ require (
 
 require (
 	github.com/Microsoft/go-winio v0.6.2 // indirect
+	github.com/briandowns/spinner v1.23.2 // indirect
 	github.com/containerd/errdefs v1.0.0 // indirect
 	github.com/containerd/errdefs/pkg v0.3.0 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
@@ -42,6 +43,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/sys v0.42.0 // indirect
+	golang.org/x/term v0.1.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

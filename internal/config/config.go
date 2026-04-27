@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/projdocs/cli/config/keys"
+	"github.com/projdocs/cli/internal/config/keys"
 )
 
 type Config struct {

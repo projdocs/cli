@@ -8,7 +8,7 @@ import (
 	"github.com/moby/moby/api/types/mount"
 	"github.com/moby/moby/api/types/network"
 	"github.com/moby/moby/client"
-	"github.com/projdocs/cli/config"
+	"github.com/projdocs/cli/internal/config"
 	"github.com/projdocs/cli/pkg"
 	"github.com/projdocs/cli/pkg/types"
 	"github.com/projdocs/cli/pkg/types/embeds"
