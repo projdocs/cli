@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/projdocs/cli/pkg/services/auth"
 	"github.com/projdocs/cli/pkg/services/caddy"
 	"github.com/projdocs/cli/pkg/services/kong"
 	"github.com/projdocs/cli/pkg/services/minio"
@@ -18,5 +19,6 @@ func GetAll() []types.ServiceConstructor {
 		postgrest.ServiceConstructor,
 		minio.ServiceConstructor,
 		storage.ServiceConstructor,
+		auth.ServiceConstructor,
 	}
 }

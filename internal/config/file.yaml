@@ -2,3 +2,11 @@ urls:
   web:      http://localhost
 storage:
   size_limit_mb: 50
+email:
+  host: 127.0.0.1
+  port: 587
+  username: admin
+  password: not-set
+  sender:
+    email: no-reply@example.com
+    name: ProjDocs

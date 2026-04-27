@@ -18,6 +18,16 @@ type File struct {
 	Storage struct {
 		SizeLimitInMB int `yaml:"size_limit_mb"`
 	} `yaml:"storage"`
+	Email struct {
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
+		Host     string `yaml:"host"`
+		Port     int    `yaml:"port"`
+		Sender   struct {
+			Email string `yaml:"email"`
+			Name  string `yaml:"name"`
+		} `yaml:"sender"`
+	} `yaml:"email"`
 }
 
 func (file *File) Validate() error {
