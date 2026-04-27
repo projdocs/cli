@@ -1,4 +1,4 @@
-package dkr
+package docker
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"github.com/moby/moby/client"
 )
 
-func (docker *DockerClient) ExecInContainer(ctx context.Context, containerID string, cmd []string) (string, error) {
+func (docker *Client) ExecInContainer(ctx context.Context, containerID string, cmd []string) (string, error) {
 	execResp, err := docker.api.ExecCreate(ctx, containerID, client.ExecCreateOptions{
 		Cmd:          cmd,
 		AttachStdout: true,

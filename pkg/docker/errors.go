@@ -1,4 +1,4 @@
-package dkr
+package docker
 
 import "regexp"
 

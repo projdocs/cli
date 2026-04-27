@@ -8,6 +8,7 @@ import (
 	"github.com/moby/moby/client"
 	"github.com/projdocs/cli/internal/config"
 	"github.com/projdocs/cli/pkg"
+	"github.com/projdocs/cli/pkg/docker"
 	"github.com/projdocs/cli/pkg/types"
 	"github.com/projdocs/cli/pkg/types/embeds"
 )
@@ -71,13 +72,7 @@ var ServiceConstructor types.ServiceConstructor = func(cfg config.Config) *types
 				//	network.MustParsePort("8443/tcp"): []network.PortBinding{{HostIP: netip.MustParseAddr("0.0.0.0"), HostPort: "8443"}},
 				//},
 			},
-			//NetworkingConfig: &network.NetworkingConfig{
-			//	EndpointsConfig: map[string]*network.EndpointSettings{
-			//		"default": {
-			//			Aliases: []string{"api-gw"},
-			//		},
-			//	},
-			//},
+			NetworkingConfig: docker.MakeNetworkConfig("kong", "api-gw"),
 		},
 	}
 }

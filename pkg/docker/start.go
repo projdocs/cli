@@ -1,4 +1,4 @@
-package dkr
+package docker
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/moby/moby/client"
 )
 
-func (docker *DockerClient) Start(ctx context.Context, containerID string) error {
+func (docker *Client) Start(ctx context.Context, containerID string) error {
 	select {
 	case <-ctx.Done():
 		return ctx.Err()

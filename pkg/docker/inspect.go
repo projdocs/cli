@@ -1,4 +1,4 @@
-package dkr
+package docker
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/moby/moby/client"
 )
 
-func (docker *DockerClient) InspectContainer(ctx context.Context, containerID string) error {
+func (docker *Client) InspectContainer(ctx context.Context, containerID string) error {
 	for retries := 0; retries < 5; retries++ {
 		if inspect, inspectErr := docker.api.ContainerInspect(ctx, containerID, client.ContainerInspectOptions{}); inspectErr != nil {
 			color.Yellow("failed to inspect container: %s", inspectErr)

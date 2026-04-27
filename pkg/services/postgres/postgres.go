@@ -8,10 +8,10 @@ import (
 
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/api/types/mount"
-	"github.com/moby/moby/api/types/network"
 	"github.com/moby/moby/client"
 	config2 "github.com/projdocs/cli/internal/config"
 	"github.com/projdocs/cli/pkg"
+	"github.com/projdocs/cli/pkg/docker"
 	"github.com/projdocs/cli/pkg/types"
 	"github.com/projdocs/cli/pkg/types/embeds"
 )
@@ -156,7 +156,7 @@ var ServiceConstructor types.ServiceConstructor = func(cfg config2.Config) *type
 					},
 				},
 			},
-			NetworkingConfig: &network.NetworkingConfig{},
+			NetworkingConfig: docker.MakeNetworkConfig("db"),
 		},
 	}
 }

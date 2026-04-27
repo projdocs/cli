@@ -7,17 +7,17 @@ import (
 	"github.com/fatih/color"
 	"github.com/projdocs/cli/internal"
 	"github.com/projdocs/cli/internal/config"
-	"github.com/projdocs/cli/pkg/dkr"
+	"github.com/projdocs/cli/pkg/docker"
 	"github.com/projdocs/cli/pkg/types"
 )
 
 type Builder struct {
 	built        bool
 	constructors []types.ServiceConstructor
-	docker       *dkr.DockerClient
+	docker       *docker.Client
 }
 
-func NewRunner(docker *dkr.DockerClient, constructors ...types.ServiceConstructor) *Builder {
+func NewRunner(docker *docker.Client, constructors ...types.ServiceConstructor) *Builder {
 	return &Builder{
 		built:        false,
 		constructors: constructors,
@@ -57,7 +57,7 @@ func (r *Builder) Build(cfg config.Config) *Runner {
 type Runner struct {
 	started  bool
 	services []*types.ServiceConstructorResult
-	docker   *dkr.DockerClient
+	docker   *docker.Client
 }
 
 func (r *Runner) Start(ctx context.Context) error {
@@ -67,7 +67,14 @@ func (r *Runner) Start(ctx context.Context) error {
 	}
 	r.started = true
 
-	spin := internal.NewSpinner("Starting services...")
+	spin := internal.NewSpinner("Ensuring docker network...")
+	err := r.docker.EnsureNetwork(ctx)
+	if err != nil {
+		spin.Fail("could not ensure docker network exists!")
+		return err
+	}
+
+	spin.Update("Starting services...")
 	for _, service := range r.services {
 		spin.Update(fmt.Sprintf("Starting %s...", service.Container.Name))
 		select {

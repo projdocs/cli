@@ -1,4 +1,4 @@
-package dkr
+package docker
 
 import (
 	"archive/tar"
@@ -15,7 +15,7 @@ import (
 	"github.com/projdocs/cli/pkg/types/embeds"
 )
 
-func (docker *DockerClient) Create(ctx context.Context, constructor *types.ServiceConstructorResult) (*string, error) {
+func (docker *Client) Create(ctx context.Context, constructor *types.ServiceConstructorResult) (*string, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -73,7 +73,7 @@ func (docker *DockerClient) Create(ctx context.Context, constructor *types.Servi
 	}
 }
 
-func (docker *DockerClient) copyToContainer(ctx context.Context, containerID string, file *embeds.EmbeddedFile) (*client.CopyToContainerResult, error) {
+func (docker *Client) copyToContainer(ctx context.Context, containerID string, file *embeds.EmbeddedFile) (*client.CopyToContainerResult, error) {
 
 	var buf bytes.Buffer
 	tw := tar.NewWriter(&buf)

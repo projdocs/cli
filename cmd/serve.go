@@ -5,7 +5,7 @@ import (
 
 	"github.com/moby/moby/client"
 	config2 "github.com/projdocs/cli/internal/config"
-	"github.com/projdocs/cli/pkg/dkr"
+	"github.com/projdocs/cli/pkg/docker"
 	"github.com/projdocs/cli/pkg/services"
 	"github.com/spf13/cobra"
 )
@@ -16,8 +16,8 @@ var serveCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 
 		var (
-			docker *dkr.DockerClient
-			cfg    *config2.Config
+			dkr *docker.Client
+			cfg *config2.Config
 		)
 
 		// load config
@@ -31,17 +31,17 @@ var serveCmd = &cobra.Command{
 		if api, err := client.New(); err != nil {
 			return fmt.Errorf("could not initialize docker client: %w", err)
 		} else {
-			docker = dkr.NewClient(api)
+			dkr = docker.NewClient(api)
 		}
 
 		// ping docker
-		if err := docker.Ping(cmd.Context()); err != nil {
+		if err := dkr.Ping(cmd.Context()); err != nil {
 			return fmt.Errorf("could not ping docker client: %w", err)
 		}
 
 		// create the runner
 		runner := services.
-			NewRunner(docker, services.GetAll()...).
+			NewRunner(dkr, services.GetAll()...).
 			Build(*cfg)
 
 		// start server
