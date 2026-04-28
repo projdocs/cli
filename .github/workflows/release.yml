@@ -41,6 +41,8 @@ jobs:
           - windows
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - run: make dist GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} VERSION=${{ needs.version.outputs.next }}
 
@@ -60,8 +62,37 @@ jobs:
 
       - run: ls ./dist/
 
+      - name: generate changelog from conventional commits
+        id: changelog
+        run: |
+          # Get previous and new tag
+          prev_tag=$(git tag --sort=version:refname | tail -n2 | head -n1 || true)
+          new_tag="${{ steps.bump.outputs.tag }}"
+          
+          if [ -z "$prev_tag" ]; then
+          range=""
+          else
+          range="$prev_tag..HEAD"
+          fi
+          
+          echo "Generating changelog for $range"
+          
+          # Basic conventional-commit grouping
+          notes=$(git log $range --pretty=format:"%s" |
+          grep -E "^(feat|fix|chore|docs|refactor|perf|test|ci):" |
+          sed -E "s/^(feat:)/### ✨ Features\n-/; s/^(fix:)/### 🐛 Fixes\n-/; s/^(chore:)/### 🛠 Chores\n-/; s/^(docs:)/### 📚 Docs\n-/; s/^(refactor:)/### ♻️ Refactor\n-/; s/^(perf:)/### ⚡ Performance\n-/; s/^(test:)/### ✅ Tests\n-/; s/^(ci:)/### 🤖 CI\n-/")
+          
+          # Collapse duplicates headers
+          release_notes=$(echo "$notes" | awk '!a[$0]++')
+          
+          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$release_notes" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.version.outputs.next }}
           files: ./dist/*
           generate_release_notes: true
+          body: ${{ steps.changelog.outputs.release_notes }}
+          make_latest: true
