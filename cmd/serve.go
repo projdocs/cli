@@ -80,7 +80,7 @@ var serveCmd = &cobra.Command{
 		// handle shutdown
 		if *serveCmdListen {
 			<-ctx.Done()
-			fmt.Fprintf(os.Stderr, "\nreceived signal %s, shutting down...\n", context.Cause(ctx))
+			fmt.Fprintf(os.Stderr, "\n%s, shutting down...\n", context.Cause(ctx))
 			runner.Stop()
 			color.Blue("Goodbye!")
 		}
