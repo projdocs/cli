@@ -62,31 +62,21 @@ jobs:
 
       - run: ls ./dist/
 
-      - name: generate changelog from conventional commits
-        id: changelog
+      - name: Generate release notes
+        id: notes
         run: |
-          # Get previous and new tag
-          prev_tag=$(git tag --sort=version:refname | tail -n2 | head -n1 || true)
-          new_tag="${{ steps.bump.outputs.tag }}"
-          
-          if [ -z "$prev_tag" ]; then
-          range=""
-          else
-          range="$prev_tag..HEAD"
-          fi
-          
-          echo "Generating changelog for $range"
-          
-          # Basic conventional-commit grouping
-          notes=$(git log $range --pretty=format:"%s" |
-          grep -E "^(feat|fix|chore|docs|refactor|perf|test|ci):" |
-          sed -E "s/^(feat:)/### ✨ Features\n-/; s/^(fix:)/### 🐛 Fixes\n-/; s/^(chore:)/### 🛠 Chores\n-/; s/^(docs:)/### 📚 Docs\n-/; s/^(refactor:)/### ♻️ Refactor\n-/; s/^(perf:)/### ⚡ Performance\n-/; s/^(test:)/### ✅ Tests\n-/; s/^(ci:)/### 🤖 CI\n-/")
-          
-          # Collapse duplicates headers
-          release_notes=$(echo "$notes" | awk '!a[$0]++')
-          
-          echo "release_notes<<EOF" >> $GITHUB_OUTPUT
-          echo "$release_notes" >> $GITHUB_OUTPUT
+          NOTES=$(git log $(git describe --tags --abbrev=0 HEAD^)..HEAD --pretty=format:"%s" | awk '
+            /^feat/     { print "✨ " $0 }
+            /^fix/      { print "🐛 " $0 }
+            /^chore/    { print "🔧 " $0 }
+            /^docs/     { print "📚 " $0 }
+            /^refactor/ { print "♻️  " $0 }
+            /^perf/     { print "⚡ " $0 }
+            /^test/     { print "🧪 " $0 }
+            /^ci/       { print "👷 " $0 }
+          ')
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - uses: softprops/action-gh-release@v3
@@ -94,5 +84,5 @@ jobs:
           tag_name: ${{ needs.version.outputs.next }}
           files: ./dist/*
           generate_release_notes: true
-          body: ${{ steps.changelog.outputs.release_notes }}
+          body: ${{ steps.notes.outputs.notes }}
           make_latest: true
