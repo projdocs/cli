@@ -22,7 +22,7 @@ permissions:
 jobs:
 
   version:
-    uses: train360-corp/actions/.github/workflows/get-release-version.yml@main
+    uses: rdbc-corp/actions/.github/workflows/get-release-version.yml@main
     with:
       bump-type: ${{ github.event.inputs.type }}
 
