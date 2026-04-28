@@ -59,3 +59,9 @@ jobs:
           merge-multiple: true
 
       - run: ls ./dist/
+
+      - uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.version.outputs.next }}
+          files: ./dist/*
+          generate_release_notes: true
