@@ -39,6 +39,7 @@ func (docker *Client) Create(ctx context.Context, constructor *types.ServiceCons
 		}
 
 		// create container
+		// TODO: consider removing and moving this logic to Runner
 		ctr, err := docker.api.ContainerCreate(ctx, *constructor.Container)
 		if err != nil {
 			if isNameConflictErr(err) {

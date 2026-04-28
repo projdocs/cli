@@ -10,7 +10,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/moby/moby/client"
 	config2 "github.com/projdocs/cli/internal/config"
-	"github.com/projdocs/cli/pkg/docker"
+	"github.com/projdocs/cli/internal/docker"
 	"github.com/projdocs/cli/pkg/services"
 	"github.com/spf13/cobra"
 )

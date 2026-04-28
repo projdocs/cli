@@ -6,8 +6,8 @@ import (
 	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/client"
 	config2 "github.com/projdocs/cli/internal/config"
+	"github.com/projdocs/cli/internal/docker"
 	"github.com/projdocs/cli/pkg"
-	"github.com/projdocs/cli/pkg/docker"
 	"github.com/projdocs/cli/pkg/services/postgres"
 	"github.com/projdocs/cli/pkg/types"
 )

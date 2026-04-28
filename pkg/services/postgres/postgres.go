@@ -10,8 +10,8 @@ import (
 	"github.com/moby/moby/api/types/mount"
 	"github.com/moby/moby/client"
 	config2 "github.com/projdocs/cli/internal/config"
+	"github.com/projdocs/cli/internal/docker"
 	"github.com/projdocs/cli/pkg"
-	"github.com/projdocs/cli/pkg/docker"
 	"github.com/projdocs/cli/pkg/types"
 	"github.com/projdocs/cli/pkg/types/embeds"
 )

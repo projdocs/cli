@@ -7,7 +7,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/projdocs/cli/internal"
 	"github.com/projdocs/cli/internal/config"
-	"github.com/projdocs/cli/pkg/docker"
+	"github.com/projdocs/cli/internal/docker"
 	"github.com/projdocs/cli/pkg/types"
 )
 
