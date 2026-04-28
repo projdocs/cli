@@ -1,7 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/moby/moby/client"
 	config2 "github.com/projdocs/cli/internal/config"
@@ -9,6 +13,8 @@ import (
 	"github.com/projdocs/cli/pkg/services"
 	"github.com/spf13/cobra"
 )
+
+var serveCmdListen *bool = new(false)
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
@@ -46,16 +52,32 @@ var serveCmd = &cobra.Command{
 			NewRunner(dkr, services.GetAll()...).
 			Build(*cfg)
 
-		// start server
-		if err := runner.Start(cmd.Context()); err != nil {
-			// TODO: cleanup
+		// derive a cancellable context; wire up signal handling if --listen
+		// derive context; wire up signal handling if --listen
+		ctx := cmd.Context()
+		if *serveCmdListen {
+			var stop context.CancelFunc
+			ctx, stop = signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
+			defer stop()
+		}
 
+		// start server
+		if err := runner.Start(ctx); err != nil {
 			return fmt.Errorf("could not start runner: %w", err)
 		}
+
+		// handle shutdown
+		if *serveCmdListen {
+			<-ctx.Done()
+			fmt.Fprintf(os.Stderr, "\nreceived signal %s, shutting down...\n", context.Cause(ctx))
+			runner.Stop()
+		}
+
 		return nil
 	},
 }
 
 func init() {
 	ProjDocs.AddCommand(serveCmd)
+	serveCmd.Flags().BoolVarP(serveCmdListen, "listen", "l", false, "listen for exit signals to control shutdown")
 }

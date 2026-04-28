@@ -60,6 +60,10 @@ type Runner struct {
 	docker   *docker.Client
 }
 
+func (r *Runner) Stop() {
+	color.Yellow("TODO: stop not implemented")
+}
+
 func (r *Runner) Start(ctx context.Context) error {
 
 	if r.started {
