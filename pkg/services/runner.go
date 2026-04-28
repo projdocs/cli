@@ -61,7 +61,25 @@ type Runner struct {
 }
 
 func (r *Runner) Stop() {
-	color.Yellow("TODO: stop not implemented")
+
+	spin := internal.NewSpinner("Shutting down...")
+	var errors []error
+	for i := len(r.services) - 1; i >= 0; i-- {
+		service := r.services[i]
+		spin.Update(fmt.Sprintf("Starting %s...", service.Container.Name))
+		if err := r.docker.Stop(context.Background(), service.Container.Name); err != nil {
+			errors = append(errors, fmt.Errorf("could not stop container %s: %w", service.Container.Name, err))
+		}
+	}
+
+	if len(errors) == 0 {
+		spin.Success("Stopped successfully!")
+	} else {
+		spin.Fail("Stopped with errors: ")
+		for _, err := range errors {
+			color.Red(err.Error())
+		}
+	}
 }
 
 func (r *Runner) Start(ctx context.Context) error {
