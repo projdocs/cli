@@ -1,0 +1,62 @@
+name: release.yml
+on:
+  workflow_dispatch:
+    inputs:
+      type:
+        type: choice
+        description: "Version bump type"
+        options: [ PATCH, MINOR, MAJOR ]
+        default: PATCH
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  packages: write
+#  pages: write
+#  id-token: write
+
+jobs:
+
+  version:
+    uses: train360-corp/actions/.github/workflows/get-release-version.yml@main
+    with:
+      bump-type: ${{ github.event.inputs.type }}
+
+  build:
+    runs-on: ubuntu-24.04
+    name: build
+    needs: version
+    strategy:
+      matrix:
+        arch:
+          - 386
+          - amd64
+          - arm64
+        os:
+          - darwin
+          - linux
+          - windows
+    steps:
+      - uses: actions/checkout@v6
+
+      - run: make dist GOOS=${{ matrix.os }} GOARCH=${{ matrix.arch }} VERSION=${{ needs.version.outputs.next }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: projdocs-${{ matrix.os }}-${{ matrix.arch }}
+          path: ./dist/
+
+  release:
+    runs-on: ubuntu-24.04
+    needs: [version, build]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./dist/
+          merge-multiple: true
+
+      - run: ls ./dist/
