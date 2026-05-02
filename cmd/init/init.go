@@ -1,4 +1,4 @@
-package cmd
+package init
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var initCmd = &cobra.Command{
+var Command = &cobra.Command{
 	Use:     "init",
 	Aliases: []string{"setup"},
 	Short:   "Setup a ProjDocs server",
@@ -50,8 +50,4 @@ var initCmd = &cobra.Command{
 
 		return nil
 	},
-}
-
-func init() {
-	ProjDocs.AddCommand(initCmd)
 }

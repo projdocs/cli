@@ -1,4 +1,4 @@
-package cmd
+package serve
 
 import (
 	"context"
@@ -20,7 +20,7 @@ var (
 	serveCmdForce  *bool = new(false)
 )
 
-var serveCmd = &cobra.Command{
+var Command = &cobra.Command{
 	Use:   "serve",
 	Short: "Start the ProjDocs server",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -90,8 +90,6 @@ var serveCmd = &cobra.Command{
 }
 
 func init() {
-	ProjDocs.AddCommand(serveCmd)
-	serveCmd.Flags().BoolVarP(serveCmdListen, "listen", "l", false, "listen for exit signals to control shutdown")
-	serveCmd.Flags().BoolVarP(serveCmdForce, "force", "f", false, "force serve by removing existing containers and re-serving")
-
+	Command.Flags().BoolVarP(serveCmdListen, "listen", "l", false, "listen for exit signals to control shutdown")
+	Command.Flags().BoolVarP(serveCmdForce, "force", "f", false, "force serve by removing existing containers and re-serving")
 }
